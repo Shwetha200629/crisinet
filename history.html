@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Incident History</title>
+    <style>
+        body {
+            font-family: Arial;
+            padding: 20px;
+            background: #111;
+            color: white;
+        }
+
+        h1 {
+            color: #00ffc8;
+        }
+
+        .card {
+            background: #1e1e1e;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+
+<body>
+
+<h1>📜 Incident History</h1>
+<div id="historyList">Loading...</div>
+
+<script>
+
+async function loadHistory() {
+    const res = await fetch('/api/history');
+    const data = await res.json();
+
+    const container = document.getElementById('historyList');
+
+    if (data.length === 0) {
+        container.innerHTML = "No history available ❌";
+        return;
+    }
+
+    container.innerHTML = "";
+
+    data.forEach(alert => {
+        container.innerHTML += `
+            <div class="card">
+                <b>${alert.type}</b><br>
+                Location: ${alert.location}<br>
+                Status: ${alert.status}
+            </div>
+        `;
+    });
+}
+
+loadHistory();
+
+</script>
+
+</body>
+</html>

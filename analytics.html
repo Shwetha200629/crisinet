@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Analytics Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        body {
+            font-family: Arial;
+            background: #0f172a;
+            color: white;
+            text-align: center;
+        }
+
+        canvas {
+            margin: 20px auto;
+            display: block;
+            width: 60%;
+        }
+    </style>
+</head>
+
+<body>
+
+<h1>📊 Analytics Dashboard</h1>
+
+<canvas id="alertChart"></canvas>
+
+<script>
+fetch("/api/analytics")
+.then(res => res.json())
+.then(data => {
+
+    const ctx = document.getElementById('alertChart').getContext('2d');
+
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Fire', 'Medical', 'Security', 'Flood'],
+            datasets: [{
+                label: 'Alerts Count',
+                data: [
+                    data.by_type.Fire,
+                    data.by_type.Medical,
+                    data.by_type.Security,
+                    data.by_type.Flood
+                ]
+            }]
+        }
+    });
+
+});
+</script>
+
+</body>
+</html>

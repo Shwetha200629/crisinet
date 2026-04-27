@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>CrisisNet — Manager Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Inter',sans-serif;background:#0D1B2A;color:#F1FAEE;min-height:100vh;}
+nav{background:#162032;border-bottom:1px solid rgba(255,255,255,0.08);padding:12px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+.nav-logo{font-family:'Rajdhani',sans-serif;font-size:1.3rem;font-weight:700;letter-spacing:2px;color:#F1FAEE;}
+.nav-logo span{color:#E63946;}
+.nav-right{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.nav-links{display:flex;gap:4px;}
+.nav-link{padding:6px 12px;border:1px solid rgba(255,255,255,0.1);border-radius:6px;background:transparent;color:#8899AA;cursor:pointer;font-size:0.75rem;font-family:'Inter',sans-serif;text-decoration:none;transition:all 0.2s;}
+.nav-link:hover,.nav-link.active{border-color:#E63946;color:#E63946;background:rgba(230,57,70,0.1);}
+.badge{padding:3px 10px;border-radius:20px;font-size:0.72rem;font-weight:600;background:rgba(230,57,70,0.15);color:#E63946;border:1px solid rgba(230,57,70,0.3);}
+.logout-btn{padding:6px 12px;border:1px solid rgba(255,255,255,0.1);border-radius:6px;background:transparent;color:#8899AA;cursor:pointer;font-size:0.78rem;font-family:'Inter',sans-serif;}
+main{padding:20px 24px;max-width:1200px;margin:0 auto;}
+.page-title{font-family:'Rajdhani',sans-serif;font-size:1.4rem;font-weight:700;margin-bottom:4px;}
+.page-sub{color:#8899AA;font-size:0.82rem;margin-bottom:20px;}
+.hotel-badge{display:inline-block;padding:4px 12px;background:rgba(42,157,143,0.15);border:1px solid rgba(42,157,143,0.3);border-radius:20px;font-size:0.75rem;color:#2A9D8F;margin-bottom:12px;}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;}
+.stat{background:#162032;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:16px;}
+.stat-label{font-size:0.68rem;color:#8899AA;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;}
+.stat-val{font-family:'Rajdhani',sans-serif;font-size:1.8rem;font-weight:700;}
+.red{color:#E63946;}.green{color:#2A9D8F;}.blue{color:#457B9D;}.orange{color:#F4A261;}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.card{background:#162032;border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:18px;}
+.card-title{font-size:0.72rem;color:#8899AA;text-transform:uppercase;letter-spacing:1px;margin-bottom:14px;}
+select{width:100%;padding:8px 12px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:#F1FAEE;font-size:0.85rem;font-family:'Inter',sans-serif;outline:none;margin-bottom:10px;}
+select option{background:#162032;}
+.crisis-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.cbtn{padding:14px 8px;border:1px solid rgba(255,255,255,0.1);border-radius:10px;background:rgba(255,255,255,0.03);cursor:pointer;text-align:center;transition:all 0.2s;font-family:'Inter',sans-serif;}
+.cbtn:hover{transform:translateY(-2px);}
+.cbtn.fire:hover{border-color:#E63946;background:rgba(230,57,70,0.12);}
+.cbtn.medical:hover{border-color:#F4A261;background:rgba(244,162,97,0.12);}
+.cbtn.security:hover{border-color:#457B9D;background:rgba(69,123,157,0.12);}
+.cbtn.flood:hover{border-color:#2A9D8F;background:rgba(42,157,143,0.12);}
+.cbtn-icon{font-size:1.6rem;margin-bottom:5px;}
+.cbtn-label{font-size:0.82rem;font-weight:600;color:#F1FAEE;}
+.cbtn-sub{font-size:0.65rem;color:#8899AA;margin-top:2px;}
+.alert-list{display:flex;flex-direction:column;gap:8px;max-height:260px;overflow-y:auto;}
+.alert-item{padding:10px 12px;border-radius:8px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);display:flex;align-items:center;gap:10px;}
+.adot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.adot.active{background:#E63946;animation:pulse 1.5s infinite;}
+.adot.resolved{background:#2A9D8F;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
+.ainfo{flex:1;}
+.atype{font-size:0.82rem;font-weight:600;}
+.ameta{font-size:0.68rem;color:#8899AA;margin-top:2px;}
+.timer{font-size:0.68rem;color:#F4A261;font-weight:600;}
+.res-btn{padding:4px 10px;border:1px solid rgba(42,157,143,0.4);border-radius:5px;background:rgba(42,157,143,0.1);color:#2A9D8F;font-size:0.68rem;cursor:pointer;font-family:'Inter',sans-serif;}
+.empty{text-align:center;color:#8899AA;font-size:0.8rem;padding:20px;}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:100;align-items:center;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal{background:#162032;border:1px solid rgba(255,255,255,0.12);border-radius:16px;padding:24px;max-width:520px;width:90%;animation:fadeIn 0.3s ease;}
+@keyframes fadeIn{from{opacity:0;transform:scale(0.95)}to{opacity:1;transform:scale(1)}}
+.mheader{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+.micon{font-size:1.6rem;}
+.mtitle{font-size:1.1rem;font-weight:700;}
+.msub{font-size:0.72rem;color:#8899AA;}
+.proto-box{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:12px;font-size:0.78rem;line-height:1.7;color:#D0E0F0;white-space:pre-wrap;max-height:220px;overflow-y:auto;margin-bottom:14px;}
+.mactions{display:flex;gap:8px;}
+.mactions button{flex:1;padding:9px;border-radius:8px;font-size:0.8rem;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;border:none;transition:all 0.2s;}
+.mbtn-guest{background:rgba(69,123,157,0.15);color:#457B9D;border:1px solid rgba(69,123,157,0.3)!important;}
+.mbtn-sms{background:rgba(42,157,143,0.15);color:#2A9D8F;border:1px solid rgba(42,157,143,0.3)!important;}
+.mbtn-close{background:rgba(230,57,70,0.15);color:#E63946;}
+.spinner{border:2px solid rgba(255,255,255,0.1);border-top-color:#E63946;border-radius:50%;width:20px;height:20px;animation:spin 0.7s linear infinite;margin:10px auto;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.sms-sent{background:rgba(42,157,143,0.1);border:1px solid rgba(42,157,143,0.3);border-radius:8px;padding:8px 12px;font-size:0.78rem;color:#2A9D8F;margin-bottom:10px;display:none;}
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-logo">CRISIS<span>NET</span></div>
+  <div class="nav-links">
+    <a class="nav-link active" href="/dashboard?role={{ role }}&username={{ username }}&hotel={{ hotel }}">🏠 Dashboard</a>
+    <a class="nav-link" href="/analytics?hotel={{ hotel }}">📈 Analytics</a>
+    <a class="nav-link" href="/history?hotel={{ hotel }}">📝 History</a>
+    <a class="nav-link" href="/map?hotel={{ hotel }}">📍 Map</a>
+  </div>
+  <div class="nav-right">
+    <span style="font-size:0.78rem;color:#8899AA;">👤 {{ username }}</span>
+    <span class="badge">{{ role }}</span>
+    <button class="logout-btn" onclick="window.location='/'">Logout</button>
+  </div>
+</nav>
+<main>
+  <div class="hotel-badge">🏨 {{ hotel }}</div>
+  <div class="page-title">Emergency Control Center</div>
+  <div class="page-sub">Monitor and manage all active crisis situations in real-time</div>
+  <div class="stats">
+    <div class="stat"><div class="stat-label">Active Alerts</div><div class="stat-val red" id="s-active">0</div></div>
+    <div class="stat"><div class="stat-label">Resolved Today</div><div class="stat-val green" id="s-resolved">0</div></div>
+    <div class="stat"><div class="stat-label">Avg Response</div><div class="stat-val orange" id="s-avg">--s</div></div>
+    <div class="stat"><div class="stat-label">SMS Sent</div><div class="stat-val blue" id="s-sms">0</div></div>
+  </div>
+  <div class="grid">
+    <div class="card">
+      <div class="card-title">⚡ Trigger Crisis Alert</div>
+      <select id="loc">
+        {% for loc in ["Main Lobby","Restaurant","Kitchen","Swimming Pool","Conference Hall","Gym","Parking","Floor 1 Rooms","Floor 2 Rooms","Floor 3 Rooms"] %}
+        <option>{{ loc }}</option>
+        {% endfor %}
+      </select>
+      <select id="floor">
+        {% for f in ["Ground Floor","Floor 1","Floor 2","Floor 3","Rooftop"] %}
+        <option>{{ f }}</option>
+        {% endfor %}
+      </select>
+      <div class="crisis-grid">
+        <div class="cbtn fire" onclick="triggerAlert('Fire','🔥')"><div class="cbtn-icon">🔥</div><div class="cbtn-label">Fire</div><div class="cbtn-sub">Evacuation Required</div></div>
+        <div class="cbtn medical" onclick="triggerAlert('Medical','🏥')"><div class="cbtn-icon">🏥</div><div class="cbtn-label">Medical</div><div class="cbtn-sub">First Aid Needed</div></div>
+        <div class="cbtn security" onclick="triggerAlert('Security','🔒')"><div class="cbtn-icon">🔒</div><div class="cbtn-label">Security</div><div class="cbtn-sub">Threat Detected</div></div>
+        <div class="cbtn flood" onclick="triggerAlert('Flood','🌊')"><div class="cbtn-icon">🌊</div><div class="cbtn-label">Flood</div><div class="cbtn-sub">Water Emergency</div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">📋 Live Alert Log</div>
+      <div class="alert-list" id="alert-list"><div class="empty">No alerts yet. Trigger one!</div></div>
+    </div>
+  </div>
+</main>
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <div class="mheader">
+      <div class="micon" id="m-icon">🚨</div>
+      <div><div class="mtitle" id="m-title">Crisis Alert</div><div class="msub" id="m-sub">Generating...</div></div>
+    </div>
+    <div class="sms-sent" id="sms-sent">📱 SMS notification sent to all staff!</div>
+    <div class="proto-box" id="m-proto"><div class="spinner"></div></div>
+    <div class="mactions">
+      <button class="mbtn-guest" onclick="getGuestMsg()">📢 Guest Message</button>
+      <button class="mbtn-sms" onclick="sendSMS()">📱 SMS Staff</button>
+      <button class="mbtn-close" onclick="closeModal()">✓ Close</button>
+    </div>
+  </div>
+</div>
+<script>
+const hotel = "{{ hotel }}";
+const username = "{{ username }}";
+let currentAlert = null;
+let timerInterval = null;
+
+async function triggerAlert(type, icon) {
+  const loc = document.getElementById('loc').value;
+  const floor = document.getElementById('floor').value;
+  document.getElementById('m-icon').textContent = icon;
+  document.getElementById('m-title').textContent = type + ' Emergency — ' + loc;
+  document.getElementById('m-sub').textContent = 'Generating AI protocol...';
+  document.getElementById('m-proto').innerHTML = '<div class="spinner"></div>';
+  document.getElementById('sms-sent').style.display = 'none';
+  document.getElementById('modal').classList.add('open');
+
+  const res = await fetch('/api/trigger-alert', {
+    method: 'POST', headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({crisis_type: type, location: loc, floor, triggered_by: username, hotel})
+  });
+  const data = await res.json();
+  if (data.success) {
+    currentAlert = data.alert;
+    document.getElementById('m-proto').textContent = data.alert.protocol;
+    document.getElementById('m-sub').textContent = 'Location: ' + loc + ' • ' + data.alert.floor + ' • ' + data.alert.time + ' • ' + data.alert.ai_source;
+    document.getElementById('sms-sent').style.display = 'block';
+    loadAlerts();
+    loadStats();
+  }
+}
+
+async function getGuestMsg() {
+  if (!currentAlert) return;
+  document.getElementById('m-proto').innerHTML = '<div class="spinner"></div>';
+  const res = await fetch('/api/guest-message', {
+    method: 'POST', headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({crisis_type: currentAlert.type, location: currentAlert.location, hotel})
+  });
+  const data = await res.json();
+  document.getElementById('m-proto').textContent = '📢 GUEST ANNOUNCEMENT:\n\n' + data.message;
+}
+
+async function sendSMS() {
+  document.getElementById('sms-sent').style.display = 'block';
+  document.getElementById('sms-sent').textContent = '📱 SMS sent to all staff members!';
+}
+
+function closeModal() { document.getElementById('modal').classList.remove('open'); }
+
+async function loadAlerts() {
+  const res = await fetch('/api/alerts?hotel=' + encodeURIComponent(hotel));
+  const data = await res.json();
+  const el = document.getElementById('alert-list');
+  if (!data.alerts.length) { el.innerHTML = '<div class="empty">No alerts yet. Trigger one!</div>'; return; }
+  el.innerHTML = data.alerts.map(a => `
+    <div class="alert-item">
+      <div class="adot ${a.status === 'Active' ? 'active' : 'resolved'}"></div>
+      <div class="ainfo">
+        <div class="atype">${a.type === 'Fire' ? '🔥' : a.type === 'Medical' ? '🏥' : a.type === 'Security' ? '🔒' : '🌊'} ${a.type} — ${a.location}</div>
+        <div class="ameta">${a.floor} • ${a.time} • ${a.triggered_by}
+          ${a.status === 'Active' && a.live_seconds ? `<span class="timer"> ⏱️ ${formatTime(a.live_seconds)}</span>` : ''}
+          • <span style="color:${a.status==='Active'?'#E63946':'#2A9D8F'}">${a.status}</span>
+        </div>
+      </div>
+      ${a.status === 'Active' ? `<button class="res-btn" onclick="resolveAlert('${a.id}')">Resolve</button>` : ''}
+    </div>`).join('');
+}
+
+function formatTime(seconds) {
+  const m = Math.floor(seconds / 60), s = seconds % 60;
+  return m > 0 ? `${m}m ${s}s` : `${s}s`;
+}
+
+async function resolveAlert(id) {
+  await fetch('/api/resolve-alert', {
+    method: 'POST', headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({id, resolved_by: username, hotel})
+  });
+  loadAlerts(); loadStats();
+}
+
+async function loadStats() {
+  const res = await fetch('/api/analytics?hotel=' + encodeURIComponent(hotel));
+  const data = await res.json();
+  document.getElementById('s-active').textContent = data.active;
+  document.getElementById('s-resolved').textContent = data.resolved;
+  document.getElementById('s-avg').textContent = data.avg_response_seconds ? formatTime(data.avg_response_seconds) : '--';
+  const nres = await fetch('/api/notifications?hotel=' + encodeURIComponent(hotel));
+  const ndata = await nres.json();
+  document.getElementById('s-sms').textContent = ndata.notifications.length;
+}
+
+setInterval(() => { loadAlerts(); }, 5000);
+setInterval(() => { loadStats(); }, 10000);
+loadAlerts(); loadStats();
+</script>
+</body>
+</html>
