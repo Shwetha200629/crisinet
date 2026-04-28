@@ -4,7 +4,7 @@ import requests
 import datetime
 import json
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder=".")
 CORS(app)
 
 FIREBASE_URL = "https://crisisnet-f5b21-default-rtdb.firebaseio.com"
